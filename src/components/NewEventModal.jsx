@@ -53,25 +53,35 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
   const [error,   setError]   = useState(null)
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+  const focus = (e) => { e.target.style.borderColor = 'rgba(255,107,0,0.5)' }
+  const blur  = (e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)' }
 
   const handleSubmit = async () => {
     if (!form.title.trim()) return setError('Título é obrigatório.')
-    if (!form.category)     return setError('Categoria é obrigatória.')
     if (!form.eventDate)    return setError('Data é obrigatória.')
 
-    setLoading(true); setError(null)
+    if (!isEdit) {
+      const cid = Number(calendarId)
+      if (!calendarId || isNaN(cid) || cid <= 0) {
+        return setError('Calendário não encontrado para este cliente. Recarregue a página.')
+      }
+    }
+
+    setLoading(true)
+    setError(null)
+
     try {
       const payload = {
-        title:       form.title.trim(),
-        description: form.description.trim() || undefined,
-        category:    form.category,
-        status:      form.status,
-        eventDate:   new Date(form.eventDate + 'T12:00:00.000Z').toISOString(),
-        eventTime:   form.eventTime || undefined,
-        imageUrl:    form.imageUrl.trim() || undefined,
+        title:    form.title.trim(),
+        category: form.category,
+        status:   form.status,
+        eventDate: new Date(form.eventDate + 'T12:00:00.000Z').toISOString(),
       }
 
-      if (!isEdit) payload.calendarId = Number(calendarId)
+      if (form.description.trim()) payload.description = form.description.trim()
+      if (form.eventTime)          payload.eventTime   = form.eventTime
+      if (form.imageUrl.trim())    payload.imageUrl    = form.imageUrl.trim()
+      if (!isEdit)                 payload.calendarId  = Number(calendarId)
 
       if (isEdit) {
         await updateEvent(event.id, payload)
@@ -88,33 +98,38 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
     }
   }
 
-  const focus = (e) => { e.target.style.borderColor = 'rgba(255,107,0,0.5)' }
-  const blur  = (e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)' }
-
   return (
     <AnimatePresence>
-      <Modal title={isEdit ? 'Editar Evento' : 'Novo Evento'} onClose={onClose}>
+      <Modal title={isEdit ? 'Editar Evento' : 'Novo Evento'} onClose={!loading ? onClose : undefined}>
         <ErrorMsg msg={error} />
+
+        {loading && (
+          <div style={{ padding: '8px 12px', marginBottom: '16px', borderRadius: '8px', background: 'rgba(255,107,0,0.08)', border: '1px solid rgba(255,107,0,0.2)', fontSize: '12px', color: '#FF8C42', textAlign: 'center' }}>
+            Salvando... (pode levar alguns segundos na primeira vez)
+          </div>
+        )}
 
         <FormField label="Título *">
           <input style={inputStyle} placeholder="Ex: Vídeo Promocional 600MB"
-            value={form.title} onChange={set('title')} onFocus={focus} onBlur={blur} />
+            value={form.title} onChange={set('title')} onFocus={focus} onBlur={blur}
+            disabled={loading} />
         </FormField>
 
         <FormField label="Descrição">
           <textarea style={{ ...inputStyle, height: '72px', resize: 'vertical' }}
             placeholder="Detalhes do evento..."
-            value={form.description} onChange={set('description')} onFocus={focus} onBlur={blur} />
+            value={form.description} onChange={set('description')} onFocus={focus} onBlur={blur}
+            disabled={loading} />
         </FormField>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <FormField label="Categoria *">
-            <select style={selectStyle} value={form.category} onChange={set('category')}>
+            <select style={selectStyle} value={form.category} onChange={set('category')} disabled={loading}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
           </FormField>
           <FormField label="Status">
-            <select style={selectStyle} value={form.status} onChange={set('status')}>
+            <select style={selectStyle} value={form.status} onChange={set('status')} disabled={loading}>
               {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
           </FormField>
@@ -123,17 +138,20 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <FormField label="Data *">
             <input style={inputStyle} type="date"
-              value={form.eventDate} onChange={set('eventDate')} onFocus={focus} onBlur={blur} />
+              value={form.eventDate} onChange={set('eventDate')} onFocus={focus} onBlur={blur}
+              disabled={loading} />
           </FormField>
           <FormField label="Horário">
             <input style={inputStyle} type="time"
-              value={form.eventTime} onChange={set('eventTime')} onFocus={focus} onBlur={blur} />
+              value={form.eventTime} onChange={set('eventTime')} onFocus={focus} onBlur={blur}
+              disabled={loading} />
           </FormField>
         </div>
 
         <FormField label="URL da Imagem (opcional)">
           <input style={inputStyle} placeholder="https://..."
-            value={form.imageUrl} onChange={set('imageUrl')} onFocus={focus} onBlur={blur} />
+            value={form.imageUrl} onChange={set('imageUrl')} onFocus={focus} onBlur={blur}
+            disabled={loading} />
         </FormField>
 
         <SubmitButton loading={loading} onClick={handleSubmit}>
