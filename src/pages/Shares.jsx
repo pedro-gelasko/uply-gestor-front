@@ -25,7 +25,15 @@ export default function Shares() {
   useEffect(() => { fetch() }, [fetch])
 
   const handleCopy = (share) => {
-    navigator.clipboard.writeText(`https://saborr.app${share.link}`)
+    const url = `${window.location.origin}/share/${share.token}`
+    navigator.clipboard.writeText(url).catch(() => {
+      const el = document.createElement('textarea')
+      el.value = url
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+    })
     setCopiedId(share.id)
     setTimeout(() => setCopiedId(null), 2000)
   }
