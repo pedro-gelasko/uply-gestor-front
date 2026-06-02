@@ -47,6 +47,7 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
     status:      event?.status      || 'PLANNED',
     eventDate:   toDateInput(event?.eventDate || event?.start) || '',
     eventTime:   event?.eventTime   || '',
+    imageUrl:    event?.imageUrl    || '',
   })
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
@@ -109,6 +110,13 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
             </select>
           </FormField>
         </div>
+
+        <FormField label="URL da Imagem">
+          <input style={inputStyle} placeholder="https://..." value={form.imageUrl} onChange={set('imageUrl')}
+            onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+          />
+        </FormField>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <FormField label="Data *">

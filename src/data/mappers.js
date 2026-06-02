@@ -78,6 +78,7 @@ export const mapEvent = (event) => ({
   files:         event.attachments?.map((a) => a.fileName) || [],
   start:         event.eventDate,
   description:   event.description || '',
+  imageUrl:      event.imageUrl || null,
 })
 
 export const mapEventToFC = (event) => {

@@ -131,6 +131,21 @@ export default function EventDetailsDrawer({ event, onClose, onUpdate, onDelete 
               </div>
             </div>
 
+            {/* Image */}
+            {event.imageUrl && (
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ fontSize: '11px', color: '#555', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+                  Imagem
+                </div>
+                <img
+                  src={event.imageUrl}
+                  alt={event.title}
+                  style={{ width: '100%', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.07)', objectFit: 'cover', maxHeight: '160px' }}
+                  onError={e => e.target.style.display = 'none'}
+                />
+              </div>
+            )}
+
             {/* Files */}
             {event.files?.length > 0 && (
               <div>
