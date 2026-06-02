@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background-color: #0F0F0F;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 107, 0, 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 107, 0, 0.5);
+  }
+}
+
+/* FullCalendar custom styles */
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.fc-col-header-cell {
+  background: rgba(26, 26, 26, 0.8) !important;
+  padding: 10px 0 !important;
+}
+
+.fc-col-header-cell-cushion {
+  color: #B3B3B3 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  text-decoration: none !important;
+}
+
+.fc-daygrid-day {
+  background: transparent !important;
+  transition: background 0.15s ease !important;
+}
+
+.fc-daygrid-day:hover {
+  background: rgba(255, 107, 0, 0.04) !important;
+}
+
+.fc-daygrid-day-number {
+  color: #B3B3B3 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  padding: 8px 10px !important;
+  text-decoration: none !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  background: #FF6B00 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 6px !important;
+  font-weight: 600 !important;
+}
+
+.fc-day-today {
+  background: rgba(255, 107, 0, 0.04) !important;
+}
+
+.fc-button-primary {
+  background: rgba(255, 107, 0, 0.15) !important;
+  border: 1px solid rgba(255, 107, 0, 0.3) !important;
+  color: #FF6B00 !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc-button-primary:hover {
+  background: rgba(255, 107, 0, 0.25) !important;
+  border-color: rgba(255, 107, 0, 0.5) !important;
+}
+
+.fc-button-primary:focus {
+  box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.3) !important;
+}
+
+.fc-button-primary:not(:disabled).fc-button-active,
+.fc-button-primary:not(:disabled):active {
+  background: rgba(255, 107, 0, 0.3) !important;
+  border-color: rgba(255, 107, 0, 0.6) !important;
+}
+
+.fc-toolbar-title {
+  color: #FFFFFF !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.fc-event {
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  border: none !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 2px 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.fc-event:hover {
+  transform: scale(1.02) !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3) !important;
+}
+
+.fc-event-title {
+  font-weight: 500 !important;
+}
+
+.fc-more-link {
+  color: #FF8C42 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.fc-daygrid-day-frame {
+  min-height: 80px !important;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 20px !important;
+}
+
+.fc-timegrid-slot {
+  height: 40px !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.fc-timegrid-slot-label {
+  color: #B3B3B3 !important;
+  font-size: 11px !important;
+}
+
+.fc-list-day-cushion {
+  background: rgba(26, 26, 26, 0.9) !important;
+  color: #B3B3B3 !important;
+}
+
+.fc-list-event:hover td {
+  background: rgba(255, 107, 0, 0.06) !important;
+}
+
+.fc-list-event-title a {
+  color: #fff !important;
+}
+
+.fc-popover {
+  background: #1A1A1A !important;
+  border: 1px solid rgba(255, 107, 0, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+.fc-popover-header {
+  background: rgba(255, 107, 0, 0.1) !important;
+  color: #fff !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.fc-popover-body {
+  background: #1A1A1A !important;
+  border-radius: 0 0 12px 12px !important;
+}

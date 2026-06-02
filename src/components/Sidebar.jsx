@@ -1,0 +1,158 @@
+import { motion } from 'framer-motion'
+import {
+  LayoutDashboard,
+  Users,
+  Calendar,
+  Share2,
+  History,
+  Settings,
+  Zap,
+} from 'lucide-react'
+
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'clientes', label: 'Clientes', icon: Users },
+  { id: 'calendario', label: 'Calendário', icon: Calendar },
+  { id: 'compartilhamentos', label: 'Compartilhamentos', icon: Share2 },
+  { id: 'historico', label: 'Histórico', icon: History },
+  { id: 'configuracoes', label: 'Configurações', icon: Settings },
+]
+
+export default function Sidebar({ activePage, onNavigate }) {
+  return (
+    <aside
+      style={{
+        width: '220px',
+        minWidth: '220px',
+        height: '100%',
+        background: 'rgba(15, 15, 15, 0.95)',
+        borderRight: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '20px 0',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }}
+    >
+      {/* Logo */}
+      <div style={{ padding: '0 20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+        >
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #FF6B00, #FF8C42)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(255,107,0,0.35)',
+            }}
+          >
+            <Zap size={18} color="#fff" strokeWidth={2.5} />
+          </div>
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '-0.02em', color: '#fff' }}>
+              SABORR
+            </div>
+            <div style={{ fontSize: '10px', color: '#FF8C42', fontWeight: '500', marginTop: '-1px', letterSpacing: '0.05em' }}>
+              CRM
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        {navItems.map((item, i) => {
+          const Icon = item.icon
+          const isActive = activePage === item.id
+          return (
+            <motion.button
+              key={item.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+              onClick={() => onNavigate(item.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '9px 12px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                width: '100%',
+                textAlign: 'left',
+                fontSize: '13px',
+                fontWeight: isActive ? '600' : '400',
+                transition: 'all 0.15s ease',
+                background: isActive ? 'rgba(255,107,0,0.12)' : 'transparent',
+                color: isActive ? '#FF6B00' : '#B3B3B3',
+              }}
+              whileHover={{
+                background: isActive ? 'rgba(255,107,0,0.15)' : 'rgba(255,255,255,0.05)',
+                color: isActive ? '#FF6B00' : '#fff',
+              }}
+            >
+              <Icon
+                size={16}
+                color={isActive ? '#FF6B00' : 'currentColor'}
+                strokeWidth={isActive ? 2.5 : 1.8}
+              />
+              {item.label}
+              {isActive && (
+                <motion.div
+                  layoutId="activeIndicator"
+                  style={{
+                    marginLeft: 'auto',
+                    width: '4px',
+                    height: '4px',
+                    borderRadius: '50%',
+                    background: '#FF6B00',
+                  }}
+                />
+              )}
+            </motion.button>
+          )
+        })}
+      </nav>
+
+      {/* Footer */}
+      <div
+        style={{
+          padding: '16px 20px',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FF6B00, #FF8C42)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '11px',
+              fontWeight: '700',
+              color: '#fff',
+              flexShrink: 0,
+            }}
+          >
+            PG
+          </div>
+          <div>
+            <div style={{ fontSize: '12px', fontWeight: '500', color: '#fff' }}>Pedro Gelasko</div>
+            <div style={{ fontSize: '10px', color: '#666' }}>Administrador</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  )
+}
