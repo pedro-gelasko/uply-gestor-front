@@ -44,7 +44,7 @@ export default function Sidebar({ activePage, onNavigate }) {
           <img
             src="/uply.png"
             alt="UPLY Gestor"
-            style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '44px', width: 'auto', objectFit: 'contain', maxWidth: '160px' }}
             onError={(e) => { e.target.style.display = 'none' }}
           />
         </motion.div>
