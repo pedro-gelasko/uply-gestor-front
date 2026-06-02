@@ -403,7 +403,7 @@ export default function ClientSharePreview({ share, onClose }) {
                   <Zap size={10} color="#FF6B00" />
                   <span style={{ fontSize: '10px', color: '#333' }}>
                     Powered by{' '}
-                    <span style={{ color: '#FF6B00', fontWeight: '600' }}>SABORR CRM</span>
+                    <span style={{ color: '#FF6B00', fontWeight: '600' }}>UPLY Gestor</span>
                   </span>
                 </div>
               </div>

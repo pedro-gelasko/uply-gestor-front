@@ -144,7 +144,7 @@ export default function SharePage() {
             <div style={{ width: '28px', height: '28px', borderRadius: '7px', background: 'linear-gradient(135deg,#FF6B00,#FF8C42)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(255,107,0,0.3)' }}>
               <Zap size={13} color="#fff" strokeWidth={2.5} />
             </div>
-            <span style={{ fontSize: '13px', fontWeight: '700', color: '#FF6B00', letterSpacing: '-0.01em' }}>SABORR</span>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#FF6B00', letterSpacing: '-0.01em' }}>UPLY</span>
           </div>
 
           <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.08)' }} />
@@ -199,7 +199,7 @@ export default function SharePage() {
       {/* Footer */}
       <div style={{ padding: '10px 32px', borderTop: '1px solid rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', flexShrink: 0 }}>
         <Zap size={10} color="#FF6B00" />
-        <span style={{ fontSize: '10px', color: '#333' }}>Powered by <span style={{ color: '#FF6B00', fontWeight: '600' }}>SABORR CRM</span></span>
+        <span style={{ fontSize: '10px', color: '#333' }}>Powered by <span style={{ color: '#FF6B00', fontWeight: '600' }}>UPLY Gestor</span></span>
       </div>
     </div>
   )

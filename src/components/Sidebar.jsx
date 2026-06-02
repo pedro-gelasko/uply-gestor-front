@@ -41,26 +41,18 @@ export default function Sidebar({ activePage, onNavigate }) {
           animate={{ opacity: 1, x: 0 }}
           style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
         >
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #FF6B00, #FF8C42)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(255,107,0,0.35)',
-            }}
-          >
-            <Zap size={18} color="#fff" strokeWidth={2.5} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="UPLY Gestor"
+            style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+            onError={(e) => { e.target.style.display = 'none' }}
+          />
           <div>
             <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '-0.02em', color: '#fff' }}>
-              SABORR
+              UPLY
             </div>
             <div style={{ fontSize: '10px', color: '#FF8C42', fontWeight: '500', marginTop: '-1px', letterSpacing: '0.05em' }}>
-              CRM
+              GESTOR
             </div>
           </div>
         </motion.div>
