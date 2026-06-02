@@ -42,19 +42,11 @@ export default function Sidebar({ activePage, onNavigate }) {
           style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
         >
           <img
-            src="/logo.png"
+            src="/uply.png"
             alt="UPLY Gestor"
-            style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
             onError={(e) => { e.target.style.display = 'none' }}
           />
-          <div>
-            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '-0.02em', color: '#fff' }}>
-              UPLY
-            </div>
-            <div style={{ fontSize: '10px', color: '#FF8C42', fontWeight: '500', marginTop: '-1px', letterSpacing: '0.05em' }}>
-              GESTOR
-            </div>
-          </div>
         </motion.div>
       </div>
 
