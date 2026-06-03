@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Building2, Palette, Globe, Zap, Bell, Check, BarChart2, Pen, MessageCircle, Share, CheckCircle, Users, Plus, Power, Shield, Eye } from 'lucide-react'
+import { Building2, Palette, Globe, Zap, Bell, Check, BarChart2, Pen, MessageCircle, Share, CheckCircle, Users, Plus, Power, Shield, Eye, Lock } from 'lucide-react'
 import { getUser, getUsers, toggleUser } from '../services/authService'
 import NewUserModal from '../components/NewUserModal'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const STORAGE_KEY = 'uply_settings'
 
@@ -95,9 +96,10 @@ const roleConfig = {
 export default function Settings() {
   const [settings,   setSettings]   = useState(load)
   const [saved,      setSaved]      = useState(false)
-  const [users,      setUsers]      = useState([])
-  const [showNewUser,setShowNewUser] = useState(false)
-  const [togglingId, setTogglingId] = useState(null)
+  const [users,          setUsers]          = useState([])
+  const [showNewUser,    setShowNewUser]     = useState(false)
+  const [showChangePwd,  setShowChangePwd]  = useState(false)
+  const [togglingId,     setTogglingId]     = useState(null)
 
   const currentUser  = getUser()
   const isSuperAdmin = currentUser?.role === 'SUPERADMIN'
@@ -235,6 +237,26 @@ export default function Settings() {
         </SectionCard>
       </div>
 
+      {/* Segurança — disponível para todos */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
+        style={{ background: 'rgba(26,26,26,0.8)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', padding: '20px', backdropFilter: 'blur(20px)', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Lock size={15} color="#3b82f6" />
+            </div>
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>Segurança</div>
+              <div style={{ fontSize: '11px', color: '#555', marginTop: '2px' }}>Gerencie sua senha de acesso</div>
+            </div>
+          </div>
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => setShowChangePwd(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '9px', border: '1px solid rgba(59,130,246,0.3)', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}>
+            <Lock size={13} /> Alterar Senha
+          </motion.button>
+        </div>
+      </motion.div>
+
       {/* Usuários — somente SUPERADMIN */}
       {isSuperAdmin && (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}
@@ -363,13 +385,13 @@ export default function Settings() {
         </motion.button>
       </div>
 
-      {/* Modal novo usuário */}
+      {/* Modals */}
       <AnimatePresence>
         {showNewUser && (
-          <NewUserModal
-            onClose={() => setShowNewUser(false)}
-            onSuccess={() => { setShowNewUser(false); fetchUsers() }}
-          />
+          <NewUserModal onClose={() => setShowNewUser(false)} onSuccess={() => { setShowNewUser(false); fetchUsers() }} />
+        )}
+        {showChangePwd && (
+          <ChangePasswordModal onClose={() => setShowChangePwd(false)} />
         )}
       </AnimatePresence>
     </div>
