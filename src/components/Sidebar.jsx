@@ -49,7 +49,7 @@ export default function Sidebar({ activePage, onNavigate, user, onLogout }) {
           <img
             src="/uply.png"
             alt="UPLY Gestor"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 45%', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', display: 'block' }}
             onError={(e) => { e.target.parentElement.style.display = 'none' }}
           />
         </motion.div>
