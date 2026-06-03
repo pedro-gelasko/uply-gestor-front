@@ -5,7 +5,8 @@ import './index.css'
 import App from './App.jsx'
 import SharePage from './pages/SharePage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-import { isAuthenticated, getUser, initAuth } from './services/authService.js'
+import ForcePasswordPage from './pages/ForcePasswordPage.jsx'
+import { getUser, initAuth, logout } from './services/authService.js'
 
 initAuth()
 
@@ -21,7 +22,13 @@ function Root() {
   if (!authChecked) return null
 
   const handleLogin  = (u) => setUser(u)
-  const handleLogout = () => { setUser(null) }
+  const handleLogout = () => { logout(); setUser(null) }
+
+  const handlePasswordChanged = () => {
+    const updated = { ...user, mustChangePassword: false }
+    localStorage.setItem('uply_user', JSON.stringify(updated))
+    setUser(updated)
+  }
 
   return (
     <BrowserRouter>
@@ -36,9 +43,11 @@ function Root() {
 
         {/* App protegido */}
         <Route path="/*" element={
-          user
-            ? <App user={user} onLogout={handleLogout} />
-            : <Navigate to="/login" replace />
+          !user
+            ? <Navigate to="/login" replace />
+            : user.mustChangePassword
+              ? <ForcePasswordPage user={user} onPasswordChanged={handlePasswordChanged} />
+              : <App user={user} onLogout={handleLogout} />
         } />
       </Routes>
     </BrowserRouter>
