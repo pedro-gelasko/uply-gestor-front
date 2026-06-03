@@ -7,7 +7,9 @@ import {
   History,
   Settings,
   Zap,
+  LogOut,
 } from 'lucide-react'
+import { logout } from '../services/authService'
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -18,7 +20,13 @@ const navItems = [
   { id: 'configuracoes', label: 'Configurações', icon: Settings },
 ]
 
-export default function Sidebar({ activePage, onNavigate }) {
+export default function Sidebar({ activePage, onNavigate, user, onLogout }) {
+  const initials = (name = '') => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+
+  const handleLogout = () => {
+    logout()
+    onLogout?.()
+  }
   return (
     <aside
       style={{
@@ -114,27 +122,17 @@ export default function Sidebar({ activePage, onNavigate }) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #FF6B00, #FF8C42)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '11px',
-              fontWeight: '700',
-              color: '#fff',
-              flexShrink: 0,
-            }}
-          >
-            PG
+          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF6B00, #FF8C42)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>
+            {initials(user?.name || 'U')}
           </div>
-          <div>
-            <div style={{ fontSize: '12px', fontWeight: '500', color: '#fff' }}>Pedro Gelasko</div>
-            <div style={{ fontSize: '10px', color: '#666' }}>Administrador</div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '12px', fontWeight: '500', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.name || 'Usuário'}</div>
+            <div style={{ fontSize: '10px', color: '#666' }}>{user?.role === 'SUPERADMIN' ? 'Super Admin' : 'Administrador'}</div>
           </div>
+          <button onClick={handleLogout} title="Sair"
+            style={{ width: '26px', height: '26px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#555', flexShrink: 0 }}>
+            <LogOut size={12} />
+          </button>
         </div>
       </div>
     </aside>

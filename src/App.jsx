@@ -18,7 +18,7 @@ const pageTransition = {
   transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] },
 }
 
-export default function App() {
+export default function App({ user, onLogout }) {
   const [activePage,       setActivePage]       = useState('dashboard')
   const [selectedClient,   setSelectedClient]   = useState(null)
   const [showNewClient,    setShowNewClient]     = useState(false)
@@ -94,7 +94,7 @@ export default function App() {
     <div style={{ width: '100%', height: '100%', display: 'flex', background: '#0F0F0F', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, backgroundImage: `linear-gradient(rgba(255,107,0,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,107,0,0.015) 1px, transparent 1px)`, backgroundSize: '48px 48px', pointerEvents: 'none' }} />
 
-      <Sidebar activePage={activePage} onNavigate={handleNavigate} />
+      <Sidebar activePage={activePage} onNavigate={handleNavigate} user={user} onLogout={onLogout} />
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
         <Header
