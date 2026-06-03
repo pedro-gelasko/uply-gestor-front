@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Building2, Palette, Globe, Zap, Bell, Check, BarChart2, Pen, MessageCircle, Share, CheckCircle } from 'lucide-react'
+import { Building2, Palette, Globe, Zap, Bell, Check, BarChart2, Pen, MessageCircle, Share, CheckCircle, Users, Plus, Power, Shield, Eye } from 'lucide-react'
+import { getUser, getUsers, toggleUser } from '../services/authService'
+import NewUserModal from '../components/NewUserModal'
 
 const STORAGE_KEY = 'uply_settings'
 
@@ -84,9 +86,34 @@ function SectionCard({ icon: Icon, color, title, children }) {
   )
 }
 
+const roleConfig = {
+  SUPERADMIN: { label: 'Super Admin', color: '#FF6B00', bg: 'rgba(255,107,0,0.12)', border: 'rgba(255,107,0,0.25)', icon: Shield },
+  ADMIN:      { label: 'Administrador', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.25)', icon: Users },
+  VIEWER:     { label: 'Visualizador', color: '#22c55e', bg: 'rgba(34,197,94,0.12)', border: 'rgba(34,197,94,0.25)', icon: Eye },
+}
+
 export default function Settings() {
-  const [settings, setSettings] = useState(load)
-  const [saved,    setSaved]    = useState(false)
+  const [settings,   setSettings]   = useState(load)
+  const [saved,      setSaved]      = useState(false)
+  const [users,      setUsers]      = useState([])
+  const [showNewUser,setShowNewUser] = useState(false)
+  const [togglingId, setTogglingId] = useState(null)
+
+  const currentUser  = getUser()
+  const isSuperAdmin = currentUser?.role === 'SUPERADMIN'
+
+  const fetchUsers = useCallback(async () => {
+    if (!isSuperAdmin) return
+    try { setUsers(await getUsers()) } catch {}
+  }, [isSuperAdmin])
+
+  useEffect(() => { fetchUsers() }, [fetchUsers])
+
+  const handleToggleUser = async (id) => {
+    setTogglingId(id)
+    try { await toggleUser(id); await fetchUsers() } catch {}
+    finally { setTogglingId(null) }
+  }
 
   const setAgency = (field) => (e) =>
     setSettings(s => ({ ...s, agency: { ...s.agency, [field]: e.target.value } }))
@@ -208,6 +235,88 @@ export default function Settings() {
         </SectionCard>
       </div>
 
+      {/* Usuários — somente SUPERADMIN */}
+      {isSuperAdmin && (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}
+          style={{ background: 'rgba(26,26,26,0.8)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', padding: '20px', backdropFilter: 'blur(20px)', marginBottom: '16px' }}>
+
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,107,0,0.1)', border: '1px solid rgba(255,107,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Users size={15} color="#FF6B00" />
+              </div>
+              <div>
+                <span style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>Usuários</span>
+                <span style={{ fontSize: '11px', color: '#555', marginLeft: '8px' }}>{users.length} cadastrados</span>
+              </div>
+            </div>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => setShowNewUser(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', borderRadius: '9px', border: 'none', background: 'linear-gradient(135deg,#FF6B00,#FF8C42)', color: '#fff', fontSize: '12px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 2px 10px rgba(255,107,0,0.25)' }}>
+              <Plus size={13} strokeWidth={2.5} /> Novo Usuário
+            </motion.button>
+          </div>
+
+          {/* User list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {users.map((user) => {
+              const rc = roleConfig[user.role] || roleConfig.ADMIN
+              const RoleIcon = rc.icon
+              const isMe     = user.email === currentUser?.email
+              const isToggling = togglingId === user.id
+
+              return (
+                <motion.div key={user.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${user.active ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)'}`, opacity: user.active ? 1 : 0.55, transition: 'opacity 0.2s' }}>
+
+                  {/* Avatar */}
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: `linear-gradient(135deg,${rc.color},${rc.color}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>
+                    {user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: '600', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</span>
+                      {isMe && <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,107,0,0.12)', color: '#FF8C42', fontWeight: '600' }}>VOCÊ</span>}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#555', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.email}</div>
+                  </div>
+
+                  {/* Role badge */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '100px', background: rc.bg, border: `1px solid ${rc.border}`, flexShrink: 0 }}>
+                    <RoleIcon size={11} color={rc.color} />
+                    <span style={{ fontSize: '11px', fontWeight: '600', color: rc.color }}>{rc.label}</span>
+                  </div>
+
+                  {/* Status */}
+                  <div style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '6px', background: user.active ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', color: user.active ? '#22c55e' : '#ef4444', fontWeight: '500', flexShrink: 0 }}>
+                    {user.active ? 'Ativo' : 'Inativo'}
+                  </div>
+
+                  {/* Toggle — não pode desativar a si mesmo */}
+                  {!isMe && (
+                    <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+                      onClick={() => handleToggleUser(user.id)}
+                      disabled={isToggling}
+                      title={user.active ? 'Desativar usuário' : 'Ativar usuário'}
+                      style={{ width: '30px', height: '30px', borderRadius: '7px', border: `1px solid ${user.active ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)'}`, background: user.active ? 'rgba(239,68,68,0.08)' : 'rgba(34,197,94,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isToggling ? 'not-allowed' : 'pointer', color: user.active ? '#ef4444' : '#22c55e', opacity: isToggling ? 0.5 : 1, flexShrink: 0 }}>
+                      <Power size={12} />
+                    </motion.button>
+                  )}
+                </motion.div>
+              )
+            })}
+
+            {users.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '24px', color: '#555', fontSize: '13px' }}>
+                Nenhum usuário cadastrado além de você.
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+
       {/* Integrações */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
         style={{ background: 'rgba(26,26,26,0.8)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', padding: '20px', backdropFilter: 'blur(20px)', marginBottom: '20px' }}>
@@ -253,6 +362,16 @@ export default function Settings() {
           Salvar Configurações
         </motion.button>
       </div>
+
+      {/* Modal novo usuário */}
+      <AnimatePresence>
+        {showNewUser && (
+          <NewUserModal
+            onClose={() => setShowNewUser(false)}
+            onSuccess={() => { setShowNewUser(false); fetchUsers() }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
