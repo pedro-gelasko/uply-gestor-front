@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Modal, { inputStyle, FormField, SubmitButton, ErrorMsg } from './Modal'
-import { createUser } from '../services/authService'
+import { createUser, getUser } from '../services/authService'
 
 const selectStyle = {
   ...inputStyle,
@@ -13,12 +13,16 @@ const selectStyle = {
   paddingRight: '32px',
 }
 
-const ROLES = [
-  { value: 'ADMIN',  label: 'Administrador', description: 'Acesso completo ao sistema' },
-  { value: 'VIEWER', label: 'Visualizador',   description: 'Somente leitura' },
+const ALL_ROLES = [
+  { value: 'SUPERADMIN', label: 'Super Admin',    description: 'Controle total — criar e gerenciar usuários' },
+  { value: 'ADMIN',      label: 'Administrador',  description: 'Acesso completo ao sistema' },
+  { value: 'VIEWER',     label: 'Visualizador',   description: 'Somente leitura' },
 ]
 
 export default function NewUserModal({ onClose, onSuccess }) {
+  const currentUser = getUser()
+  const ROLES = currentUser?.role === 'SUPERADMIN' ? ALL_ROLES : ALL_ROLES.filter(r => r.value !== 'SUPERADMIN')
+
   const [form,    setForm]    = useState({ name: '', email: '', password: '', role: 'ADMIN' })
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
