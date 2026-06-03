@@ -43,16 +43,12 @@ export default function Sidebar({ activePage, onNavigate, user, onLogout }) {
       }}
     >
       {/* Logo */}
-      <div style={{ padding: '0 20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-        >
+      <div style={{ padding: '20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <img
             src="/uply.png"
             alt="UPLY Gestor"
-            style={{ height: '44px', width: 'auto', objectFit: 'contain', maxWidth: '160px' }}
+            style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
             onError={(e) => { e.target.style.display = 'none' }}
           />
         </motion.div>
