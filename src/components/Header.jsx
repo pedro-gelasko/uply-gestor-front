@@ -119,30 +119,6 @@ export default function Header({ onNewEvent, onNewClient, currentClientName }) {
         />
       </motion.button>
 
-      {/* Novo Evento */}
-      <motion.button
-        whileHover={{ scale: 1.02, background: 'rgba(255,107,0,0.2)' }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onNewEvent}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '7px',
-          padding: '8px 14px',
-          borderRadius: '9px',
-          border: '1px solid rgba(255,107,0,0.3)',
-          background: 'rgba(255,107,0,0.12)',
-          color: '#FF8C42',
-          fontSize: '13px',
-          fontWeight: '500',
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
-        }}
-      >
-        <Plus size={14} strokeWidth={2.5} />
-        Novo Evento
-      </motion.button>
-
       {/* Novo Cliente */}
       <motion.button
         whileHover={{ scale: 1.02 }}
