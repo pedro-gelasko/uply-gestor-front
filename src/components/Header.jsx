@@ -119,30 +119,6 @@ export default function Header({ onNewEvent, onNewClient, currentClientName }) {
         />
       </motion.button>
 
-      {/* Novo Cliente */}
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onNewClient}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '7px',
-          padding: '8px 14px',
-          borderRadius: '9px',
-          border: 'none',
-          background: 'linear-gradient(135deg, #FF6B00, #FF8C42)',
-          color: '#fff',
-          fontSize: '13px',
-          fontWeight: '600',
-          cursor: 'pointer',
-          boxShadow: '0 2px 12px rgba(255,107,0,0.3)',
-          transition: 'all 0.15s ease',
-        }}
-      >
-        <UserPlus size={14} strokeWidth={2.5} />
-        Novo Cliente
-      </motion.button>
     </header>
   )
 }
