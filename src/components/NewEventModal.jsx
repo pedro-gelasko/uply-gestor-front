@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Modal, { inputStyle, FormField, SubmitButton, ErrorMsg } from './Modal'
 import { createEvent, updateEvent } from '../services/eventService'
+import FileUpload from './FileUpload'
 
 const CATEGORIES = [
   { value: 'VIDEO',         label: 'Vídeo' },
@@ -148,10 +149,12 @@ export default function NewEventModal({ calendarId, event, onClose, onSuccess })
           </FormField>
         </div>
 
-        <FormField label="URL da Imagem (opcional)">
-          <input style={inputStyle} placeholder="https://..."
-            value={form.imageUrl} onChange={set('imageUrl')} onFocus={focus} onBlur={blur}
-            disabled={loading} />
+        <FormField label="Imagem ou Vídeo (opcional)">
+          <FileUpload
+            value={form.imageUrl}
+            onChange={(url) => setForm(f => ({ ...f, imageUrl: url }))}
+            disabled={loading}
+          />
         </FormField>
 
         <SubmitButton loading={loading} onClick={handleSubmit}>
