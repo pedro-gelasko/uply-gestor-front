@@ -237,8 +237,8 @@ export default function Settings() {
         </SectionCard>
       </div>
 
-      {/* Segurança — disponível para todos */}
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
+      {/* Segurança — somente SUPERADMIN */}
+      {isSuperAdmin && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
         style={{ background: 'rgba(26,26,26,0.8)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', padding: '20px', backdropFilter: 'blur(20px)', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -255,7 +255,7 @@ export default function Settings() {
             <Lock size={13} /> Alterar Senha
           </motion.button>
         </div>
-      </motion.div>
+      </motion.div>}
 
       {/* Usuários — somente SUPERADMIN */}
       {isSuperAdmin && (
