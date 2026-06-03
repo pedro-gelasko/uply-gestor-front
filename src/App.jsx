@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Dashboard from './pages/Dashboard'
 import Clients from './pages/Clients'
 import ClientCalendar from './pages/ClientCalendar'
+import GlobalCalendar from './pages/GlobalCalendar'
 import Shares from './pages/Shares'
 import History from './pages/History'
 import Settings from './pages/Settings'
@@ -41,9 +42,16 @@ export default function App() {
         <motion.div key="client-calendar" {...pageTransition} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <ClientCalendar
             client={selectedClient}
-            onBack={() => { setSelectedClient(null); setActivePage('dashboard') }}
+            onBack={() => { setSelectedClient(null); setActivePage('calendario') }}
             onClientUpdated={refreshClients}
           />
+        </motion.div>
+      )
+    }
+    if (activePage === 'calendario' && !selectedClient) {
+      return (
+        <motion.div key="global-calendar" {...pageTransition} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <GlobalCalendar onClientClick={handleClientClick} />
         </motion.div>
       )
     }
