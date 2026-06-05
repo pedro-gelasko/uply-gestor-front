@@ -15,8 +15,8 @@ export default function Dashboard({ onClientClick }) {
   const stats = [
     { label: 'Total de Clientes',   value: String(clients.length), icon: Users,      change: 'clientes ativos',        color: '#FF6B00' },
     { label: 'Eventos Programados', value: String(totalEvents),    icon: Calendar,   change: 'em todos os calendários', color: '#FF8C42' },
-    { label: 'Taxa de Publicação',  value: '94%',                  icon: TrendingUp, change: '+3% vs mês anterior',     color: '#22c55e' },
-    { label: 'Ações Realizadas',    value: '248',                  icon: Activity,   change: 'Últimos 30 dias',         color: '#3b82f6' },
+    { label: 'Taxa de Publicação',  value: '—',                    icon: TrendingUp, change: 'sem dados ainda',          color: '#22c55e' },
+    { label: 'Ações Realizadas',   value: '—',                    icon: Activity,   change: 'Últimos 30 dias',          color: '#3b82f6' },
   ]
 
   return (
@@ -49,7 +49,7 @@ export default function Dashboard({ onClientClick }) {
               </div>
               <div style={{ fontSize: '28px', fontWeight: '700', color: '#fff', letterSpacing: '-0.04em', lineHeight: 1 }}>{stat.value}</div>
               <div style={{ fontSize: '12px', color: '#B3B3B3', marginTop: '4px' }}>{stat.label}</div>
-              <div style={{ fontSize: '11px', color: stat.color === '#22c55e' ? '#22c55e' : '#555', marginTop: '6px' }}>{stat.change}</div>
+              <div style={{ fontSize: '11px', color: (stat.color === '#22c55e' && stat.value !== '—') ? '#22c55e' : '#555', marginTop: '6px' }}>{stat.change}</div>
             </motion.div>
           )
         })}
