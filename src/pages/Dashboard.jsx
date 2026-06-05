@@ -1,22 +1,34 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Activity, TrendingUp, Calendar, Users } from 'lucide-react'
 import ClientCard from '../components/ClientCard'
 import { useClients } from '../hooks/useClients'
 import { PageLoading, PageError } from '../components/LoadingState'
+import api from '../services/api'
 
 export default function Dashboard({ onClientClick }) {
   const { clients, loading, error, refetch } = useClients()
+  const [dashStats, setDashStats] = useState({ publishRate: null, actions: null })
+
+  useEffect(() => {
+    api.get('/stats')
+      .then(r => setDashStats(r.data.data))
+      .catch(() => {})
+  }, [])
 
   if (loading) return <PageLoading message="Carregando clientes..." />
   if (error)   return <PageError message={error} onRetry={refetch} />
 
   const totalEvents = clients.reduce((a, c) => a + c.actionsCount, 0)
 
+  const publishRateLabel = dashStats.publishRate !== null ? `${dashStats.publishRate}%` : '—'
+  const actionsLabel     = dashStats.actions     !== null ? String(dashStats.actions)   : '—'
+
   const stats = [
-    { label: 'Total de Clientes',   value: String(clients.length), icon: Users,      change: 'clientes ativos',        color: '#FF6B00' },
-    { label: 'Eventos Programados', value: String(totalEvents),    icon: Calendar,   change: 'em todos os calendários', color: '#FF8C42' },
-    { label: 'Taxa de Publicação',  value: '—',                    icon: TrendingUp, change: 'sem dados ainda',          color: '#22c55e' },
-    { label: 'Ações Realizadas',   value: '—',                    icon: Activity,   change: 'Últimos 30 dias',          color: '#3b82f6' },
+    { label: 'Total de Clientes',   value: String(clients.length),  icon: Users,      change: 'clientes ativos',         color: '#FF6B00' },
+    { label: 'Eventos Programados', value: String(totalEvents),     icon: Calendar,   change: 'em todos os calendários',  color: '#FF8C42' },
+    { label: 'Taxa de Publicação',  value: publishRateLabel,        icon: TrendingUp, change: 'eventos publicados',       color: '#22c55e' },
+    { label: 'Ações Realizadas',    value: actionsLabel,            icon: Activity,   change: 'Últimos 30 dias',          color: '#3b82f6' },
   ]
 
   return (
