@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { UserPlus, Mail, Trash2 } from 'lucide-react'
+import { UserPlus, Mail, Trash2, Pencil } from 'lucide-react'
 import { useClients } from '../hooks/useClients'
 import { deleteClient } from '../services/clientService'
 import { PageLoading, PageError } from '../components/LoadingState'
@@ -10,6 +10,7 @@ import ConfirmModal from '../components/ConfirmModal'
 export default function Clients({ onClientClick, onRefresh }) {
   const { clients, loading, error, refetch } = useClients()
   const [showNew,     setShowNew]     = useState(false)
+  const [editingClient, setEditingClient] = useState(null)
   const [deletingId,  setDeletingId]  = useState(null)
   const [deletingName,setDeletingName]= useState('')
 
@@ -42,7 +43,7 @@ export default function Clients({ onClientClick, onRefresh }) {
         </motion.div>
 
         <div style={{ background: 'rgba(26,26,26,0.8)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 0.6fr 0.8fr 40px', padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 0.6fr 0.8fr 80px', padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}>
             {['Cliente', 'Responsável', 'E-mail', 'Eventos', 'Status', ''].map((h) => (
               <div key={h} style={{ fontSize: '11px', color: '#555', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</div>
             ))}
@@ -50,14 +51,16 @@ export default function Clients({ onClientClick, onRefresh }) {
 
           {clients.map((client, i) => (
             <motion.div key={client.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-              style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 0.6fr 0.8fr 40px', padding: '16px 20px', borderBottom: i < clients.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center', transition: 'background 0.15s ease' }}
+              style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 0.6fr 0.8fr 80px', padding: '16px 20px', borderBottom: i < clients.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none', alignItems: 'center', transition: 'background 0.15s ease' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,107,0,0.04)'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
               {/* Client */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => onClientClick(client)}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '9px', background: `linear-gradient(135deg, ${client.color}, ${client.color}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', flexShrink: 0 }}>
-                  {client.initials}
+                <div style={{ width: '36px', height: '36px', borderRadius: '9px', background: client.logoPath ? '#1a1a1a' : `linear-gradient(135deg, ${client.color}, ${client.color}88)`, border: client.logoPath ? '1px solid rgba(255,255,255,0.08)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', flexShrink: 0, overflow: 'hidden' }}>
+                  {client.logoPath
+                    ? <img src={client.logoPath} alt={client.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={e => { e.target.style.display = 'none' }} />
+                    : client.initials}
                 </div>
                 <div>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>{client.name}</div>
@@ -87,13 +90,21 @@ export default function Clients({ onClientClick, onRefresh }) {
                 </div>
               </div>
 
-              {/* Delete */}
-              <button
-                onClick={() => { setDeletingId(client.id); setDeletingName(client.name) }}
-                style={{ width: '30px', height: '30px', borderRadius: '7px', border: '1px solid rgba(239,68,68,0.15)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-              >
-                <Trash2 size={12} />
-              </button>
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => setEditingClient(client)}
+                  style={{ width: '30px', height: '30px', borderRadius: '7px', border: '1px solid rgba(255,107,0,0.2)', background: 'rgba(255,107,0,0.06)', color: '#FF8C42', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <Pencil size={12} />
+                </button>
+                <button
+                  onClick={() => { setDeletingId(client.id); setDeletingName(client.name) }}
+                  style={{ width: '30px', height: '30px', borderRadius: '7px', border: '1px solid rgba(239,68,68,0.15)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <Trash2 size={12} />
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -102,6 +113,9 @@ export default function Clients({ onClientClick, onRefresh }) {
       <AnimatePresence>
         {showNew && (
           <NewClientModal onClose={() => setShowNew(false)} onSuccess={refresh} />
+        )}
+        {editingClient && (
+          <NewClientModal client={editingClient} onClose={() => setEditingClient(null)} onSuccess={refresh} />
         )}
         {deletingId && (
           <ConfirmModal

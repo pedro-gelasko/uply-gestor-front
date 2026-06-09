@@ -74,7 +74,7 @@ export default function ClientCard({ client, onClick, index }) {
               width: '40px',
               height: '40px',
               borderRadius: '10px',
-              background: `linear-gradient(135deg, ${client.color}, ${client.color}99)`,
+              background: client.logoPath ? '#1a1a1a' : `linear-gradient(135deg, ${client.color}, ${client.color}99)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -83,9 +83,15 @@ export default function ClientCard({ client, onClick, index }) {
               color: '#fff',
               boxShadow: `0 4px 12px ${client.color}35`,
               flexShrink: 0,
+              overflow: 'hidden',
+              border: client.logoPath ? '1px solid rgba(255,255,255,0.08)' : 'none',
             }}
           >
-            {client.initials}
+            {client.logoPath ? (
+              <img src={client.logoPath} alt={client.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerText = client.initials }} />
+            ) : client.initials}
           </div>
           <div>
             <div style={{ fontSize: '15px', fontWeight: '600', color: '#fff', letterSpacing: '-0.01em' }}>

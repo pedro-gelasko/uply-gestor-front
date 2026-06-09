@@ -54,6 +54,7 @@ export const mapClient = (client, index = 0) => {
     uuid:                 client.uuid,
     name:                 client.name,
     initials:             initials(client.name),
+    logoPath:             client.logoPath || null,
     color:                PALETTE[index % PALETTE.length],
     actionsCount:         allEvents.length,
     nextPublicationDate:  nextDate,

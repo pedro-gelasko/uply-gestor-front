@@ -1,12 +1,25 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Modal, { inputStyle, FormField, SubmitButton, ErrorMsg } from './Modal'
-import { createClient } from '../services/clientService'
+import { createClient, updateClient } from '../services/clientService'
+import FileUpload from './FileUpload'
 
-export default function NewClientModal({ onClose, onSuccess }) {
-  const [form, setForm]     = useState({ name: '', responsibleName: '', email: '', phone: '', notes: '' })
+const focus = (e) => { e.target.style.borderColor = 'rgba(255,107,0,0.5)' }
+const blur  = (e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)' }
+
+export default function NewClientModal({ client: existing, onClose, onSuccess }) {
+  const isEdit = !!existing
+
+  const [form, setForm] = useState({
+    name:            existing?.name            || '',
+    responsibleName: existing?.contactName     || existing?.responsibleName || '',
+    email:           existing?.contactEmail    || existing?.email           || '',
+    phone:           existing?.phone           || '',
+    notes:           existing?.description     || existing?.notes           || '',
+    logoPath:        existing?.logoPath        || '',
+  })
   const [loading, setLoading] = useState(false)
-  const [error, setError]   = useState(null)
+  const [error, setError]     = useState(null)
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
@@ -16,7 +29,19 @@ export default function NewClientModal({ onClose, onSuccess }) {
     }
     setLoading(true); setError(null)
     try {
-      await createClient(form)
+      const payload = {
+        name:            form.name.trim(),
+        responsibleName: form.responsibleName.trim(),
+        email:           form.email.trim(),
+        phone:           form.phone.trim() || undefined,
+        notes:           form.notes.trim() || undefined,
+        logoPath:        form.logoPath     || undefined,
+      }
+      if (isEdit) {
+        await updateClient(existing.id, payload)
+      } else {
+        await createClient(payload)
+      }
       onSuccess()
       onClose()
     } catch (err) {
@@ -28,41 +53,53 @@ export default function NewClientModal({ onClose, onSuccess }) {
 
   return (
     <AnimatePresence>
-      <Modal title="Novo Cliente" onClose={onClose}>
+      <Modal title={isEdit ? 'Editar Cliente' : 'Novo Cliente'} onClose={!loading ? onClose : undefined}>
         <ErrorMsg msg={error} />
+
+        <FormField label="Logo do provedor (opcional)">
+          <FileUpload
+            value={form.logoPath}
+            onChange={(url) => setForm(f => ({ ...f, logoPath: url }))}
+            disabled={loading}
+            imageOnly
+          />
+        </FormField>
+
         <FormField label="Nome do provedor *">
-          <input style={inputStyle} placeholder="Ex: Voa Fibra" value={form.name} onChange={set('name')}
-            onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-          />
+          <input style={inputStyle} placeholder="Ex: Voa Fibra"
+            value={form.name} onChange={set('name')}
+            onFocus={focus} onBlur={blur} disabled={loading} />
         </FormField>
+
         <FormField label="Nome do responsável *">
-          <input style={inputStyle} placeholder="Ex: Ricardo Oliveira" value={form.responsibleName} onChange={set('responsibleName')}
-            onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-          />
+          <input style={inputStyle} placeholder="Ex: Ricardo Oliveira"
+            value={form.responsibleName} onChange={set('responsibleName')}
+            onFocus={focus} onBlur={blur} disabled={loading} />
         </FormField>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <FormField label="E-mail *">
-            <input style={inputStyle} type="email" placeholder="contato@empresa.com" value={form.email} onChange={set('email')}
-              onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
-              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-            />
+            <input style={inputStyle} type="email" placeholder="contato@empresa.com"
+              value={form.email} onChange={set('email')}
+              onFocus={focus} onBlur={blur} disabled={loading} />
           </FormField>
           <FormField label="Telefone">
-            <input style={inputStyle} placeholder="(11) 99999-9999" value={form.phone} onChange={set('phone')}
-              onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
-              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-            />
+            <input style={inputStyle} placeholder="(11) 99999-9999"
+              value={form.phone} onChange={set('phone')}
+              onFocus={focus} onBlur={blur} disabled={loading} />
           </FormField>
         </div>
+
         <FormField label="Observações">
-          <textarea style={{ ...inputStyle, height: '80px', resize: 'vertical' }} placeholder="Notas internas sobre o cliente..." value={form.notes} onChange={set('notes')}
-            onFocus={e => e.target.style.borderColor = 'rgba(255,107,0,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-          />
+          <textarea style={{ ...inputStyle, height: '80px', resize: 'vertical' }}
+            placeholder="Notas internas sobre o cliente..."
+            value={form.notes} onChange={set('notes')}
+            onFocus={focus} onBlur={blur} disabled={loading} />
         </FormField>
-        <SubmitButton loading={loading} onClick={handleSubmit}>Criar Cliente</SubmitButton>
+
+        <SubmitButton loading={loading} onClick={handleSubmit}>
+          {isEdit ? 'Salvar Alterações' : 'Criar Cliente'}
+        </SubmitButton>
       </Modal>
     </AnimatePresence>
   )

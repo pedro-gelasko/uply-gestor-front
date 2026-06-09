@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, X, Image, Film, Loader, AlertCircle } from 'lucide-react'
 import api from '../services/api'
 
-const ACCEPTED = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm'
-const MAX_MB   = 10
+const ACCEPTED_ALL   = 'image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm'
+const ACCEPTED_IMAGE = 'image/jpeg,image/png,image/webp,image/gif'
+const MAX_MB         = 10
 
-export default function FileUpload({ value, onChange, disabled }) {
+export default function FileUpload({ value, onChange, disabled, imageOnly = false }) {
+  const ACCEPTED = imageOnly ? ACCEPTED_IMAGE : ACCEPTED_ALL
   const [uploading, setUploading] = useState(false)
   const [error,     setError]     = useState(null)
   const [preview,   setPreview]   = useState(null)
@@ -146,7 +148,7 @@ export default function FileUpload({ value, onChange, disabled }) {
               Arraste ou clique para enviar
             </div>
             <div style={{ fontSize: '11px', color: '#555' }}>
-              JPG, PNG, MP4, MOV · Máx. {MAX_MB}MB
+              {imageOnly ? 'JPG, PNG, WEBP · Máx. 10MB' : 'JPG, PNG, MP4, MOV · Máx. 10MB'}
             </div>
           </motion.div>
         )}
