@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -11,13 +11,23 @@ import EventDetailsDrawer from '../components/EventDetailsDrawer'
 import NewEventModal from '../components/NewEventModal'
 import { useClientCalendar } from '../hooks/useClientCalendar'
 import { PageLoading, PageError } from '../components/LoadingState'
+import { getClientById } from '../services/clientService'
 
 export default function ClientCalendar({ client, onBack }) {
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [showNewEvent,  setShowNewEvent]  = useState(false)
+  const [resolvedCalendarId, setResolvedCalendarId] = useState(client.calendars?.[0]?.id ?? null)
   const calendarRef = useRef(null)
 
-  const calendarId = client.calendars?.[0]?.id
+  useEffect(() => {
+    if (resolvedCalendarId) return
+    getClientById(client.id).then(fresh => {
+      const id = fresh.calendars?.[0]?.id
+      if (id) setResolvedCalendarId(id)
+    }).catch(() => {})
+  }, [client.id, resolvedCalendarId])
+
+  const calendarId = resolvedCalendarId
   const { events, loading, error, refetch } = useClientCalendar(calendarId)
 
   const legend = [
