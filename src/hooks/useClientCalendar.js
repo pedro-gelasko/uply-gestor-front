@@ -8,7 +8,11 @@ export function useClientCalendar(calendarId) {
   const [error,   setError]   = useState(null)
 
   const fetch = useCallback(async () => {
-    if (!calendarId) return
+    if (!calendarId) {
+      setEvents([])
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setError(null)
     try {
