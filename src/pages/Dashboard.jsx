@@ -6,13 +6,17 @@ import { useClients } from '../hooks/useClients'
 import { PageLoading, PageError } from '../components/LoadingState'
 import api from '../services/api'
 
+let _statsCache = null
+let _statsCacheTime = 0
+
 export default function Dashboard({ onClientClick }) {
   const { clients, loading, error, refetch } = useClients()
-  const [dashStats, setDashStats] = useState({ publishRate: null, actions: null })
+  const [dashStats, setDashStats] = useState(_statsCache || { publishRate: null, actions: null })
 
   useEffect(() => {
+    if (_statsCache && (Date.now() - _statsCacheTime) < 60_000) return
     api.get('/stats')
-      .then(r => setDashStats(r.data.data))
+      .then(r => { _statsCache = r.data.data; _statsCacheTime = Date.now(); setDashStats(r.data.data) })
       .catch(() => {})
   }, [])
 
