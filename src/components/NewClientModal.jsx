@@ -24,8 +24,8 @@ export default function NewClientModal({ client: existing, onClose, onSuccess })
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
   const handleSubmit = async () => {
-    if (!form.name || !form.responsibleName || !form.email) {
-      return setError('Preencha nome, responsável e e-mail.')
+    if (!form.name || !form.responsibleName) {
+      return setError('Preencha nome e responsável.')
     }
     setLoading(true); setError(null)
     try {
@@ -78,7 +78,7 @@ export default function NewClientModal({ client: existing, onClose, onSuccess })
         </FormField>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-          <FormField label="E-mail *">
+          <FormField label="E-mail">
             <input style={inputStyle} type="email" placeholder="contato@empresa.com"
               value={form.email} onChange={set('email')}
               onFocus={focus} onBlur={blur} disabled={loading} />
